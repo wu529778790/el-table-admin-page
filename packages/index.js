@@ -1,7 +1,7 @@
-import elTablePage from './el-table-page'
+import elTableAdminPage from './el-table-admin-page'
 
 const components = [
-    elTablePage
+    elTableAdminPage
 ]
 
 const install = function (Vue) {
@@ -15,5 +15,5 @@ if (typeof window !== 'undefined' && window.vue) {
 
 export default {
     install,
-    elTablePage
+    elTableAdminPage
 }

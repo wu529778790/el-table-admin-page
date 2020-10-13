@@ -3,8 +3,8 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 
-import elTablePage from '../packages/index'
-Vue.use(elTablePage)
+import elTableAdminPage from '../packages/index'
+Vue.use(elTableAdminPage)
 
 new Vue({
   render: h => h(App),

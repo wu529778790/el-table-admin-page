@@ -1,4 +1,4 @@
-# el-table-page
+# el-table-admin-page
 
 ## Project setup
 ```

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <elTablePage />
+    <elTableAdminPage />
   </div>
 </template>
 
