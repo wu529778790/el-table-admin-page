@@ -1,12 +1,17 @@
 {
   "name": "el-table-page",
   "version": "0.1.0",
-  "private": true,
+  "description": "基于elment ui的el-table的快速页面生成器",
+  "author": "wu529778790",
+  "private": false,
+  "main": "lib/elTablePage.umd.min.js",
+  "keywords": ["el-table", "el-table-page"],
+  "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lib": "vue-cli-service build --target lib"
+    "lib": "vue-cli-service build --target lib --name elTablePage --dest lib packages/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.5",
