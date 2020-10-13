@@ -5,7 +5,10 @@
   "author": "wu529778790",
   "private": false,
   "main": "lib/elTableAdminPage.umd.min.js",
-  "keywords": ["el-table", "el-table-admin-page"],
+  "keywords": [
+    "el-table",
+    "el-table-admin-page"
+  ],
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -14,6 +17,7 @@
     "lib": "vue-cli-service build --target lib --name elTableAdminPage --dest lib packages/index.js"
   },
   "dependencies": {
+    "element-ui": "^2.13.2",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -21,6 +25,7 @@
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-component": "^1.1.1",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "lint-staged": "^9.5.0",
