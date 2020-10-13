@@ -14,8 +14,6 @@
     "lib": "vue-cli-service build --target lib --name elTableAdminPage --dest lib packages/index.js"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "vcolorpicker": "^1.0.3",
     "vue": "^2.6.11"
   },
   "devDependencies": {
