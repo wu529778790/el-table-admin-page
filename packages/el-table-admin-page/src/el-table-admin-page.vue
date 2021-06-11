@@ -28,13 +28,16 @@
                     <el-select
                       v-model="entity.querySelect"
                       placeholder="请选择"
-                      :size="searchButtonSize"
                       value-key="prop"
                       clearable
                     >
                       <el-option
                         v-for="item in columns.filter(
-                          (item) => item.query !== false
+                          (item) =>
+                            item.search !== false &&
+                            !['selection', 'index', 'expand'].includes(
+                              item.type
+                            )
                         )"
                         :key="item.prop"
                         :label="item.label"
@@ -63,7 +66,6 @@
           </div>
           <el-button
             class="BlueCustomButton searchBottom"
-            :size="searchButtonSize"
             @click.native="searchList(true)"
             >查询</el-button
           >
@@ -73,64 +75,78 @@
         <slot name="searchRight" />
       </div>
     </div>
-    <slot name="searchBottom" />
     <el-table
+      v-on="$listeners"
       v-bind="$attrs"
       :data="tableData"
-      class="tableBox"
-      :stripe="stripe"
-      :show-header="showHeader"
-      @selection-change="handleSelectionChange"
+      header-align="right"
     >
-      <el-table-column
-        v-if="selection"
-        type="selection"
-        width="55"
-        align="center"
-      />
-      <el-table-column
-        v-if="indexShow && columns.length > 0"
-        label="序号"
-        type="index"
-        width="50"
-        align="center"
-        :index="(index) => index + (page - 1) * rows + 1"
-      />
-      <el-table-column
-        v-for="column in columns"
-        :key="column.prop"
-        :align="column.align || 'center'"
-        :prop="column.prop"
-        :label="column.label"
-        :min-width="flexColumnWidth(column)"
-        :show-overflow-tooltip="showOverflowTooltip"
-      >
-        <template slot-scope="{ row }">
-          <slot name="columnEspecial" :column="column" :row="row" />
-        </template>
-      </el-table-column>
-      <slot name="columnRight" />
+      <template v-for="column in columns">
+        <el-table-column
+          v-if="['selection'].includes(column.type)"
+          v-bind="column"
+          :key="column.prop"
+          :align="column.align || 'center'"
+          :width="column.width || 50"
+        />
+        <el-table-column
+          v-if="['index'].includes(column.type)"
+          v-bind="column"
+          :key="column.prop"
+          :label="column.label || '序号'"
+          :width="column.width || 50"
+          :align="column.align || 'center'"
+          :index="(index) => index + (page - 1) * rows + 1"
+        />
+        <el-table-column
+          v-if="!['selection', 'index'].includes(column.type)"
+          v-bind="column"
+          :key="column.prop"
+          :header-align="column.headerAlign || 'center'"
+          :min-width="column.width || flexColumnWidth(column)"
+        >
+          <template v-if="column.children">
+            <el-table-column
+              v-for="child in column.children"
+              v-bind="child"
+              :key="child.prop"
+              :header-align="column.headerAlign || 'center'"
+              :min-width="child.width || flexColumnWidth(child)"
+            >
+              <template slot-scope="{ row }">
+                <slot name="columnEspecial" :column="child" :row="row" />
+              </template>
+            </el-table-column>
+          </template>
+          <template slot-scope="{ row }">
+            <slot name="columnEspecial" :column="column" :row="row" />
+          </template>
+        </el-table-column>
+      </template>
     </el-table>
 
-    <div :class="{ hidden: hidden }" class="pagination-container">
-      <el-pagination
-        :background="background"
-        :current-page.sync="currentPage"
-        :page-size.sync="pageSize"
-        :layout="layout"
-        :page-sizes="pageSizes"
-        :total="total"
-        v-bind="$attrs"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
-    </div>
+    <!-- <el-pagination
+      v-on="$listeners"
+      v-bind="$attrs"
+      :total="tableData.length"
+      :layout="'total, sizes, prev, pager, next, jumper'"
+      :page-size="10"
+      :current-page.sync="currentPage"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    /> -->
+    <el-pagination
+      v-on="$listeners"
+      v-bind="$attrs"
+      :layout="'total, sizes, prev, pager, next, jumper'"
+    />
   </div>
 </template>
 
 <script>
 export default {
   name: "elTableAdminPage",
+  inheritAttrs: false,
   props: {
     tableData: {
       type: Array,
@@ -157,13 +173,6 @@ export default {
         return "row";
       },
     },
-    // 搜索的size
-    searchButtonSize: {
-      type: String,
-      default: function () {
-        return "";
-      },
-    },
     // 搜索的显示
     searchShow: {
       type: Boolean,
@@ -174,18 +183,8 @@ export default {
       type: Boolean,
       default: true,
     },
-    // 斑马线
-    stripe: {
-      type: Boolean,
-      default: true,
-    },
-    // 表头的显示
-    showHeader: {
-      type: Boolean,
-      default: true,
-    },
-    // 多选显示
-    selection: {
+    // 多选框显示
+    selectionShow: {
       type: Boolean,
       default: false,
     },
@@ -212,38 +211,13 @@ export default {
     },
 
     // 下面是pagination
-    total: {
-      type: Number,
-      default() {
-        return 0;
-      },
-    },
     page: {
       type: Number,
       default: 1,
     },
     rows: {
       type: Number,
-      default: 20,
-    },
-    pageSizes: {
-      type: Array,
-      default() {
-        return [10, 20, 30, 50];
-      },
-    },
-    layout: {
-      type: String,
-      default: "total, sizes, prev, pager, next, jumper",
-    },
-    background: {
-      type: Boolean,
-      default: true,
-    },
-    // 分页的显示
-    hidden: {
-      type: Boolean,
-      default: false,
+      default: 10,
     },
   },
   data() {
@@ -259,22 +233,22 @@ export default {
   },
   computed: {
     // 下面是pagination
-    currentPage: {
-      get() {
-        return this.page;
-      },
-      set(val) {
-        this.$emit("update:page", val);
-      },
-    },
-    pageSize: {
-      get() {
-        return this.rows;
-      },
-      set(val) {
-        this.$emit("update:rows", val);
-      },
-    },
+    // currentPage: {
+    //   get() {
+    //     return this.page;
+    //   },
+    //   set(val) {
+    //     this.$emit("update:page", val);
+    //   },
+    // },
+    // pageSize: {
+    //   get() {
+    //     return this.rows;
+    //   },
+    //   set(val) {
+    //     this.$emit("update:rows", val);
+    //   },
+    // },
   },
   created() {
     // this.$nextTick(() => {
@@ -319,7 +293,7 @@ export default {
     addEntity() {
       if (
         this.entitys.length <=
-        this.columns.filter((item) => item.query !== false).length - 1
+        this.columns.filter((item) => item.search !== false).length - 1
       ) {
         this.entitys.push({ querySelect: "", queryValue: "", show: true });
         this.entitys.map((item) => {
@@ -352,7 +326,7 @@ export default {
      * 自适应宽度
      */
     flexColumnWidth(column) {
-      const str = column.label;
+      const str = column.label || "";
       let flexWidth = 0;
       for (const char of str) {
         if ((char >= "A" && char <= "Z") || (char >= "a" && char <= "z")) {
@@ -360,7 +334,7 @@ export default {
           flexWidth += 8;
         } else if (char >= "\u4e00" && char <= "\u9fa5") {
           // 如果是中文字符，为字符分配20个单位宽度
-          flexWidth += 19;
+          flexWidth += 16;
         } else {
           // 其他种类字符，为字符分配5个单位宽度
           flexWidth += 5;
@@ -369,15 +343,6 @@ export default {
       if (flexWidth < 70) {
         flexWidth = 70;
       }
-      // if (flexWidth > 250) { flexWidth = 250 }
-      [{ createTm: 150 }, { modifyTm: 150 }]
-        .concat(this.widthEspecial)
-        .map((item) => {
-          const entity = Object.entries(item);
-          if (entity[0][0] === column.prop) {
-            flexWidth = entity[0][1] + "px";
-          }
-        });
       return flexWidth;
     },
     /**
@@ -388,9 +353,6 @@ export default {
         item.show = false;
       });
       this.$emit("searchList", this.entitys, searchButton);
-    },
-    handleSelectionChange(val) {
-      this.$emit("update:multipleSelection", val);
     },
     /**
      * 切换多条件搜索的下拉展示与关闭
@@ -403,13 +365,13 @@ export default {
       });
     },
 
-    // 下面是pagination
-    handleSizeChange() {
-      this.$emit("pagination", this.entitys);
-    },
-    handleCurrentChange() {
-      this.$emit("pagination", this.entitys);
-    },
+    // // 下面是pagination
+    // handleSizeChange() {
+    //   this.$emit("pagination", this.entitys);
+    // },
+    // handleCurrentChange() {
+    //   this.$emit("pagination", this.entitys);
+    // },
   },
 };
 </script>
@@ -475,20 +437,5 @@ export default {
       display: flex;
     }
   }
-  .tableBox {
-    border: 1px solid #ededed;
-    border-bottom: none;
-  }
-}
-
-// 下面是pagination
-.pagination-container {
-  background: #fff;
-  padding: 32px 16px;
-  display: flex;
-  flex-direction: row-reverse;
-}
-.pagination-container.hidden {
-  display: none;
 }
 </style>
