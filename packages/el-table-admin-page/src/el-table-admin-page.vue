@@ -254,7 +254,7 @@ export default {
           queryValue: "",
           show: false,
         },
-      ]
+      ],
     };
   },
   computed: {
