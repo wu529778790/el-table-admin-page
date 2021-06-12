@@ -9,7 +9,8 @@ import {
   Select,
   Option,
   Message,
-  Input
+  Input,
+  elCollapseTransition
 } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 Vue.use(Table);
@@ -19,6 +20,7 @@ Vue.use(Pagination);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Input);
+Vue.use(elCollapseTransition);
 Vue.prototype.$message = Message;
 import CollapseTransition from "element-ui/lib/transitions/collapse-transition";
 Vue.component(CollapseTransition.name, CollapseTransition);
