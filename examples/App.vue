@@ -4,7 +4,7 @@
       ref="elTableAdminPage"
       :columns="columns"
       :table-data="tableData"
-      v-bind.sync="pageList"
+      v-bind.sync="pageParams"
       @searchList="getPage"
       @size-change="sizeChange"
       @current-change="currentChange"
@@ -95,7 +95,7 @@ export default {
           search: true,
         },
       ],
-      pageList: {
+      pageParams: {
         currentPage: 1,
         pageSize: 10,
         total: 0,
@@ -109,7 +109,7 @@ export default {
   methods: {
     getPage(entitys) {
       const params = {
-        ...this.pageList,
+        ...this.pageParams,
         entitys: entitys
           ? entitys
           : this.$refs["elTableAdminPage"] &&
@@ -119,21 +119,21 @@ export default {
       // 模拟调用分页接口
       setTimeout(() => {
         // 没有total的话生成total
-        if (!this.pageList.total) {
-          this.pageList.total =
-            this.pageList.pageSize +
-            Math.floor(Math.random() * (this.pageList.pageSize - 1 + 1) + 1);
+        if (!this.pageParams.total) {
+          this.pageParams.total =
+            this.pageParams.pageSize * 9 +
+            Math.floor(Math.random() * (this.pageParams.pageSize - 1 + 1) + 1);
         }
         //当前页要生成的条数
         let length;
         // 在最后一页的话生成total % pageSize条的数据
         if (
-          this.pageList.currentPage ===
-          Math.ceil(this.pageList.total / this.pageList.pageSize)
+          this.pageParams.currentPage ===
+          Math.ceil(this.pageParams.total / this.pageParams.pageSize)
         ) {
-          length = this.pageList.total % this.pageList.pageSize;
+          length = this.pageParams.total % this.pageParams.pageSize;
         } else {
-          length = this.pageList.pageSize;
+          length = this.pageParams.pageSize;
         }
         this.tableData = Array.from({ length }, (item, index) => {
           return {
@@ -152,12 +152,12 @@ export default {
     },
     // pageSize 改变时会触发
     sizeChange(value) {
-      this.pageList.pageSize = value;
+      this.pageParams.pageSize = value;
       this.getPage();
     },
     // currentPage 改变时会触发
     currentChange(value) {
-      this.pageList.currentPage = value;
+      this.pageParams.currentPage = value;
       this.getPage();
     },
   },

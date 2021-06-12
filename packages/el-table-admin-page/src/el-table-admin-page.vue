@@ -27,13 +27,7 @@
                       clearable
                     >
                       <el-option
-                        v-for="item in columns.filter(
-                          (item) =>
-                            item.search !== false &&
-                            !['selection', 'index', 'expand'].includes(
-                              item.type
-                            )
-                        )"
+                        v-for="item in entitysSelection"
                         :key="item.prop"
                         :label="item.label"
                         :value="item"
@@ -120,6 +114,8 @@
       </template>
     </el-table>
     <el-pagination
+      class="pagination"
+      v-if="paginationShow"
       v-on="$listeners"
       v-bind="$attrs"
       :layout="'total, sizes, prev, pager, next, jumper'"
@@ -149,12 +145,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    loading: {
-      type: Boolean,
-      default: function () {
-        return true;
-      },
-    },
     // 下面是pagination
     currentPage: {
       type: Number,
@@ -174,7 +164,31 @@ export default {
           show: false,
         },
       ],
+      // 加这个show是为了解决手动修改当前页码，数据改变，dom不生效的问题(也可以加key重新渲染)
+      paginationShow: true,
     };
+  },
+  computed: {
+    entitysSelection() {
+      const result = [];
+      const rec = (arr) => {
+        arr.map((i) => {
+          if (i.children) {
+            rec(i.children);
+          } else {
+            result.push(i);
+          }
+        });
+      };
+      rec(
+        this.columns.filter(
+          (item) =>
+            item.search !== false &&
+            !["selection", "index", "expand"].includes(item.type)
+        )
+      );
+      return result;
+    },
   },
   created() {
     this.watchMethod();
@@ -269,9 +283,13 @@ export default {
       this.entitys.map((item) => {
         item.show = false;
       });
-      reSetFirstPage && this.$emit('update:currentPage', 1)
-      const params = this.entitys.filter((item) => !item.querySelect)
-      this.$emit("searchList", params);
+      // 加这个show是为了解决手动修改当前页码，数据改变，dom不生效的问题
+      this.paginationShow = false;
+      this.$nextTick(() => {
+        this.paginationShow = true;
+        reSetFirstPage && this.$emit("update:currentPage", 1);
+      });
+      this.$emit("searchList", this.entitys);
     },
     /**
      * 切换多条件搜索的下拉展示与关闭
@@ -337,6 +355,11 @@ export default {
         }
       }
     }
+  }
+  .pagination {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
   }
 }
 </style>

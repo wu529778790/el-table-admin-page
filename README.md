@@ -1,5 +1,9 @@
 # el-table-admin-page
 
+> 公司内部快速迭代开发用的，但是一直都是在项目内，没有发到 npm 上面，当然也怕提交到 github，被公司扫到。抽空自己又写了一份，给公司内的不太一样，精简了很多，一般都是随着业务的需求逐渐完善，现在只能想到哪，完善哪了。
+
+> 用这种模板可以快速完成页面的增删改查，只需要配置特定的参数即可
+
 该项目基于 elementUI 封装的，主要封装了 Table 表格和 Pagination 分页组件，通过 columns 的参数配置页面(我们开发的时候 columns 是由后端模板生成的)，在公司内部大量使用。
 
 - 只需要设置好表头的参数就可以自动生成搜索框
@@ -39,10 +43,51 @@
 | ---------- | --------------------- | ------- |
 | searchList | 请求 tableData 的方法 | entitys |
 
-## 开发
+### 遇到的问题
+
+- 通过遍历给元素添加属性,怎么写
+
+v-bind 已经实现了，刚开始在群里讨论，大家都说要用 jsx, vue 的模板语法不支持
+
+![2bfdd6458184511d5756f9e6ba7295c](https://cdn.jsdelivr.net/gh/wu529778790/image/blog/2bfdd6458184511d5756f9e6ba7295c.png)
+
+最后在群里江南大佬的提示下，看 vue 的 issues 果然有，祖师爷回复的
+
+<https://github.com/vuejs/vue/issues/4962>
+
+![20210612161325](https://cdn.jsdelivr.net/gh/wu529778790/image/blog/20210612161325.png)
+
+```html
+<el-table-column
+  :prop="column.prop"
+  :label="column.label"
+  :width="column.width"
+  :align="column.align"
+/>
+```
+
+```html
+<el-table-column v-bind="column" />
+```
+
+- 手动修改当前页码，数据改变，dom 不生效的问题
+
+用 v-if 或者 key 重新渲染给 el-panigation 手动设置 currentPage
+
+```html
+<el-pagination
+  v-if="paginationShow"
+  v-on="$listeners"
+  v-bind="$attrs"
+  :layout="'total, sizes, prev, pager, next, jumper'"
+/>
+```
 
 ```js
-npm install
-npm run serve
-npm run build
+// 加这个show是为了解决手动修改当前页码，数据改变，dom不生效的问题
+this.paginationShow = false;
+this.$nextTick(() => {
+  this.paginationShow = true;
+  reSetFirstPage && this.$emit("update:currentPage", 1);
+});
 ```
