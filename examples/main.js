@@ -1,29 +1,6 @@
-import Vue from "vue";
 import App from "./App.vue";
 
-import {
-  Table,
-  TableColumn,
-  Button,
-  Pagination,
-  Select,
-  Option,
-  Message,
-  Input,
-  elCollapseTransition
-} from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
-Vue.use(Table);
-Vue.use(TableColumn);
-Vue.use(Button);
-Vue.use(Pagination);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(Input);
-Vue.use(elCollapseTransition);
-Vue.prototype.$message = Message;
-import CollapseTransition from "element-ui/lib/transitions/collapse-transition";
-Vue.component(CollapseTransition.name, CollapseTransition);
+import Vue from "vue";
 import elTableAdminPage from "../packages/index";
 Vue.use(elTableAdminPage);
 

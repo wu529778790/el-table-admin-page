@@ -124,6 +124,29 @@
 </template>
 
 <script>
+import Vue from "vue";
+import {
+  Table,
+  TableColumn,
+  Button,
+  Pagination,
+  Select,
+  Option,
+  Message,
+  Input,
+} from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
+import CollapseTransition from "element-ui/lib/transitions/collapse-transition";
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Button);
+Vue.use(Pagination);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(Input);
+Vue.component(CollapseTransition.name, CollapseTransition);
+Vue.prototype.$message = Message;
+
 export default {
   name: "elTableAdminPage",
   inheritAttrs: false,
@@ -196,7 +219,7 @@ export default {
         this.entitys[0].querySelect = value[0].prop;
       },
       deep: true,
-      immediate: true
+      immediate: true,
     },
   },
   created() {

@@ -29,9 +29,7 @@
 </template>
 
 <script>
-import elTableAdminPage from "../packages/el-table-admin-page/src/el-table-admin-page.vue";
 export default {
-  components: { elTableAdminPage },
   name: "App",
   data() {
     return {
