@@ -19,7 +19,10 @@
         <el-button type="primary">新增</el-button>
       </template>
       <template slot="columnEspecial" slot-scope="{ column, row }">
-        <span>{{ row[column.prop] }}</span>
+        <template v-if="['operation'].includes(column.prop)">
+          <el-button type="primary" plain size="mini">编辑</el-button>
+        </template>
+        <template v-else>{{ row[column.prop] }}</template>
       </template>
     </el-table-admin-page>
   </div>
@@ -54,7 +57,7 @@ export default {
             {
               label: "第三季度靠右",
               prop: "three",
-              align: "right"
+              align: "right",
             },
           ],
         },
@@ -93,6 +96,14 @@ export default {
           isnull: true,
           form: true,
           search: true,
+        },
+        {
+          label: "操作",
+          prop: "operation",
+          form: false,
+          search: false,
+          align: "center",
+          showOverflowTooltip: false, // 没设定宽度刚开始按钮后面出来一个点，原来是文本溢出
         },
       ],
       pageParams: {
@@ -145,7 +156,7 @@ export default {
             zip: `${index + 1}`,
             first: `一季度${index + 1}`,
             second: `二季度${index + 1}`,
-            three: `三季度${index + 1}`
+            three: `三季度${index + 1}`,
           };
         });
       }, 100);
@@ -157,8 +168,10 @@ export default {
     },
     // currentPage 改变时会触发
     currentChange(value) {
-      this.pageParams.currentPage = value;
-      this.getPage();
+      if (typeof value === 'number') {
+        this.pageParams.currentPage = value;
+        this.getPage();
+      }
     },
   },
 };

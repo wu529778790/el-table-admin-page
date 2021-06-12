@@ -43,9 +43,15 @@
 | ---------- | --------------------- | ------- |
 | searchList | 请求 tableData 的方法 | entitys |
 
+### 以后要实现的功能
+
+- 多选下拉框第一个选择的，不在第二个及以后的下拉列表里出现
+
+![20210612165908](https://cdn.jsdelivr.net/gh/wu529778790/image/blog/20210612165908.png)
+
 ### 遇到的问题
 
-- 通过遍历给元素添加属性,怎么写
+#### 通过遍历给元素添加属性,怎么写
 
 v-bind 已经实现了，刚开始在群里讨论，大家都说要用 jsx, vue 的模板语法不支持
 
@@ -70,7 +76,7 @@ v-bind 已经实现了，刚开始在群里讨论，大家都说要用 jsx, vue 
 <el-table-column v-bind="column" />
 ```
 
-- 手动修改当前页码，数据改变，dom 不生效的问题
+#### 手动修改当前页码，数据改变，dom 不生效的问题
 
 用 v-if 或者 key 重新渲染给 el-panigation 手动设置 currentPage
 
@@ -90,4 +96,30 @@ this.$nextTick(() => {
   this.paginationShow = true;
   reSetFirstPage && this.$emit("update:currentPage", 1);
 });
+```
+
+#### 点击表格会触发@current-change="currentChange"事件
+
+![20210612172409](https://cdn.jsdelivr.net/gh/wu529778790/image/blog/20210612172409.png)
+
+原来是因为 el-table 的事件名称和 el-pagination 的事件名称重复了
+
+![20210612173215](https://cdn.jsdelivr.net/gh/wu529778790/image/blog/20210612173215.png)
+
+![20210612173229](https://cdn.jsdelivr.net/gh/wu529778790/image/blog/20210612173229.png)
+
+所以要么修改方法名称，里面接一下，要么做判断区分，这里封装选择判断区分，因为 el-table 的 current-change 用的比较少(尽量不改变原来的方法参数)
+
+之所以没有在 el-table-admin-page 里面判断，是因为怕有些需求确实会遇到要用 el-table 的 current-change 事件
+
+只需要在 el-pagination 的 current-change 事件中加一个判断即可
+
+```js
+if (typeof value === "number") {
+  // el-pagination的current-change
+  this.pageParams.currentPage = value;
+  this.getPage();
+} else {
+  // el-table的 current-change
+}
 ```
