@@ -4,7 +4,8 @@
       ref="elTableAdminPage"
       :columns="columns"
       :table-data="tableData"
-      :total="pageList.total"
+      v-bind.sync="pageList"
+      @searchList="getPage"
       @size-change="sizeChange"
       @current-change="currentChange"
     >
@@ -13,6 +14,9 @@
           v-model="entitys[index].queryValue"
           placeholder="请输入搜索内容"
         />
+      </template>
+      <template slot="searchRight">
+        <el-button type="primary">新增</el-button>
       </template>
       <template slot="columnEspecial" slot-scope="{ column, row }">
         <span>{{ row[column.prop] }}</span>
@@ -36,23 +40,21 @@ export default {
           type: "index", // 序号列
         },
         {
-          label: "全年报告",
+          label: "测试二级表头",
           children: [
             {
-              label: "第一季度",
+              label: "第一季度靠左",
               prop: "first",
             },
             {
-              label: "第二季度",
+              label: "第二季度居中",
               prop: "second",
+              align: "center",
             },
             {
-              label: "第三季度",
+              label: "第三季度靠右",
               prop: "three",
-            },
-            {
-              label: "第四季度",
-              prop: "four",
+              align: "right"
             },
           ],
         },
@@ -105,36 +107,48 @@ export default {
     this.getPage();
   },
   methods: {
-    getPage() {
-      // 请求的时候不仅要带上pageList,还要带上entitys
-      this.$nextTick(() => {
-        console.log(this.pageList);
-        console.log(
-          this.$refs["elTableAdminPage"] &&
-            this.$refs["elTableAdminPage"].entitys
-        );
-      });
+    getPage(entitys) {
+      const params = {
+        ...this.pageList,
+        entitys: entitys
+          ? entitys
+          : this.$refs["elTableAdminPage"] &&
+            this.$refs["elTableAdminPage"].entitys,
+      };
+      console.log(params);
+      // 模拟调用分页接口
       setTimeout(() => {
-        this.tableData = Array.from(
-          { length: this.pageList.pageSize },
-          (item, index) => {
-            return {
-              date: new Date().getTime(),
-              name: `${index}+https://shenzjd.com`,
-              province: `${index}深圳`,
-              city: `${index}宝安区`,
-              address: `${index}上海市普陀区金沙江路 1518 弄`,
-              zip: `${index}`,
-              first: `一季度${index}`,
-              second: `二季度${index}`,
-              three: `三季度${index}`,
-              four: `四季度${index}`,
-            };
-          }
-        );
-        this.pageList.total =
-          this.pageList.pageSize + Math.floor(Math.random() * (50 - 1 + 1) + 1);
-      }, 500);
+        // 没有total的话生成total
+        if (!this.pageList.total) {
+          this.pageList.total =
+            this.pageList.pageSize +
+            Math.floor(Math.random() * (this.pageList.pageSize - 1 + 1) + 1);
+        }
+        //当前页要生成的条数
+        let length;
+        // 在最后一页的话生成total % pageSize条的数据
+        if (
+          this.pageList.currentPage ===
+          Math.ceil(this.pageList.total / this.pageList.pageSize)
+        ) {
+          length = this.pageList.total % this.pageList.pageSize;
+        } else {
+          length = this.pageList.pageSize;
+        }
+        this.tableData = Array.from({ length }, (item, index) => {
+          return {
+            date: new Date().getTime(),
+            name: `${index + 1} https://shenzjd.com`,
+            province: `${index + 1}深圳`,
+            city: `${index + 1}宝安区`,
+            address: `${index + 1}上海市普陀区金沙江路 1518 弄`,
+            zip: `${index + 1}`,
+            first: `一季度${index + 1}`,
+            second: `二季度${index + 1}`,
+            three: `三季度${index + 1}`
+          };
+        });
+      }, 100);
     },
     // pageSize 改变时会触发
     sizeChange(value) {

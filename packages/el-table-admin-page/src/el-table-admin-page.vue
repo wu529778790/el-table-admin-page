@@ -1,29 +1,24 @@
 <template>
-  <div class="table">
-    <div
-      v-if="searchShow"
-      class="searchBox"
-      :style="{ 'flex-direction': flexDirection }"
-    >
-      <div class="searchLeft">
-        <div class="searchItemBox">
+  <div class="el-table-admin-page">
+    <div v-if="searchShow" class="search-wriper">
+      <div class="search-left">
+        <div class="search-item-box">
           <div
-            class="searchTop"
+            class="search-item-top"
             :class="{
-              borderCumtom: entitys.every((item) => item.show === true),
+              'border-custom': entitys.every((item) => item.show === true),
             }"
           >
             <div
               v-for="(entity, index) in entitys"
               :key="index"
-              class="searchItem"
+              class="search-item"
             >
               <el-collapse-transition>
                 <transition name="el-zoom-in-top">
                   <div
                     v-show="index === 0 ? true : entity.show"
-                    :ref="`searchContent${index}`"
-                    class="searchContent"
+                    class="search-content"
                   >
                     <el-select
                       v-model="entity.querySelect"
@@ -47,14 +42,14 @@
                     <slot name="searchLeft" :entitys="entitys" :index="index" />
                     <div
                       v-if="index === 0"
-                      class="addEntity"
+                      class="add-entity"
                       @click="addEntity"
                     >
                       <i class="el-icon-plus" />
                     </div>
                     <div
                       v-if="index !== 0"
-                      class="addEntity"
+                      class="add-entity"
                       @click="deleteEntity(index)"
                     >
                       <i class="el-icon-minus" />
@@ -65,15 +60,14 @@
             </div>
           </div>
           <el-button
-            class="BlueCustomButton searchBottom"
+            type="primary"
             @click.native="searchList(true)"
+            style="height: 40px"
             >查询</el-button
           >
         </div>
       </div>
-      <div class="searchRight">
-        <slot name="searchRight" />
-      </div>
+      <slot name="searchRight"></slot>
     </div>
     <el-table
       v-on="$listeners"
@@ -96,13 +90,14 @@
           :label="column.label || '序号'"
           :width="column.width || 50"
           :align="column.align || 'center'"
-          :index="(index) => index + (page - 1) * rows + 1"
+          :index="(index) => index + (currentPage - 1) * pageSize + 1"
         />
         <el-table-column
           v-if="!['selection', 'index'].includes(column.type)"
           v-bind="column"
           :key="column.prop"
           :header-align="column.headerAlign || 'center'"
+          :show-overflow-tooltip="column.showOverflowTooltip || true"
           :min-width="column.width || flexColumnWidth(column)"
         >
           <template v-if="column.children">
@@ -124,17 +119,6 @@
         </el-table-column>
       </template>
     </el-table>
-
-    <!-- <el-pagination
-      v-on="$listeners"
-      v-bind="$attrs"
-      :total="tableData.length"
-      :layout="'total, sizes, prev, pager, next, jumper'"
-      :page-size="10"
-      :current-page.sync="currentPage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    /> -->
     <el-pagination
       v-on="$listeners"
       v-bind="$attrs"
@@ -148,29 +132,16 @@ export default {
   name: "elTableAdminPage",
   inheritAttrs: false,
   props: {
-    tableData: {
-      type: Array,
-      default: function () {
-        return [];
-      },
-    },
     columns: {
       type: Array,
       default: function () {
         return [];
       },
     },
-    widthEspecial: {
+    tableData: {
       type: Array,
       default: function () {
         return [];
-      },
-    },
-    // 搜索框左右排列
-    flexDirection: {
-      type: String,
-      default: function () {
-        return "row";
       },
     },
     // 搜索的显示
@@ -178,44 +149,18 @@ export default {
       type: Boolean,
       default: true,
     },
-    // 序号的显示
-    indexShow: {
-      type: Boolean,
-      default: true,
-    },
-    // 多选框显示
-    selectionShow: {
-      type: Boolean,
-      default: false,
-    },
-    multipleSelection: {
-      type: Array,
-      default: function () {
-        return [];
-      },
-    },
     loading: {
       type: Boolean,
       default: function () {
         return true;
       },
     },
-    /**
-     *当内容过长被隐藏时显示 tooltip
-     */
-    showOverflowTooltip: {
-      type: Boolean,
-      default: function () {
-        return true;
-      },
-    },
-
     // 下面是pagination
-    page: {
+    currentPage: {
       type: Number,
       default: 1,
     },
-    rows: {
+    pageSize: {
       type: Number,
       default: 10,
     },
@@ -231,37 +176,7 @@ export default {
       ],
     };
   },
-  computed: {
-    // 下面是pagination
-    // currentPage: {
-    //   get() {
-    //     return this.page;
-    //   },
-    //   set(val) {
-    //     this.$emit("update:page", val);
-    //   },
-    // },
-    // pageSize: {
-    //   get() {
-    //     return this.rows;
-    //   },
-    //   set(val) {
-    //     this.$emit("update:rows", val);
-    //   },
-    // },
-  },
   created() {
-    // this.$nextTick(() => {
-    //   this.$refs["searchContent0"] &&
-    //     this.$refs["searchContent0"][0]
-    //       .querySelectorAll("input")[1]
-    //       .addEventListener("focus", () => {
-    //         this.entitys.map((item) => {
-    //           item.show = true;
-    //         });
-    //         if (this.entitys.length === 1) this.entitys[0].show = false;
-    //       });
-    // });
     this.watchMethod();
     this.$watch(
       () => {
@@ -273,6 +188,7 @@ export default {
     );
   },
   methods: {
+    // 监听下拉框是否变化，变化的话清空value
     watchMethod() {
       this.entitys.map((item) => {
         this.$watch(
@@ -295,7 +211,7 @@ export default {
         this.entitys.length <=
         this.columns.filter((item) => item.search !== false).length - 1
       ) {
-        this.entitys.push({ querySelect: "", queryValue: "", show: true });
+        this.entitys.push({ querySelect: {}, queryValue: "", show: true });
         this.entitys.map((item) => {
           item.show = true;
         });
@@ -318,7 +234,7 @@ export default {
      */
     clearEntity() {
       this.entitys.map((item) => {
-        item.querySelect = "";
+        item.querySelect = {};
         item.queryValue = "";
       });
     },
@@ -348,11 +264,14 @@ export default {
     /**
      * 搜索，传入的值代表点击的是搜索框，而不是翻页
      */
-    searchList(searchButton) {
+    searchList(reSetFirstPage) {
+      // 关闭多条件搜索
       this.entitys.map((item) => {
         item.show = false;
       });
-      this.$emit("searchList", this.entitys, searchButton);
+      reSetFirstPage && this.$emit('update:currentPage', 1)
+      const params = this.entitys.filter((item) => !item.querySelect)
+      this.$emit("searchList", params);
     },
     /**
      * 切换多条件搜索的下拉展示与关闭
@@ -364,41 +283,30 @@ export default {
         }
       });
     },
-
-    // // 下面是pagination
-    // handleSizeChange() {
-    //   this.$emit("pagination", this.entitys);
-    // },
-    // handleCurrentChange() {
-    //   this.$emit("pagination", this.entitys);
-    // },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.table {
-  .searchBox {
+.el-table-admin-page {
+  .search-wriper {
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
-    min-height: 36px;
-    & > .searchLeft {
+    & > .search-left {
       position: relative;
-      // width: 419px;
-      width: 100%;
-      & > .searchItemBox {
+      & > .search-item-box {
         position: absolute;
         z-index: 10;
         display: flex;
-        .borderCumtom {
+        .border-custom {
           border-right: solid 1px #dfe4ed;
           border-bottom: solid 1px #dfe4ed;
         }
-        .searchTop {
+        .search-item-top {
           padding-bottom: 3px;
           background-color: white;
-          .addEntity {
+          .add-entity {
             width: 30px;
             height: 30px;
             margin: 3px;
@@ -415,26 +323,19 @@ export default {
           ::v-deep .el-input {
             width: 148px;
           }
-          .searchItem {
-            .searchContent {
+          .search-item {
+            .search-content {
               display: flex;
             }
           }
-          .searchItem + .searchItem {
+          .search-item + .search-item {
             margin: 1px 0;
           }
-          .searchItem:not(:nth-of-type(1)) {
+          .search-item:not(:nth-of-type(1)) {
             background-color: #fff;
           }
         }
-        .searchBottom {
-          height: 36px;
-          margin-left: 3px;
-        }
       }
-    }
-    .searchRight {
-      display: flex;
     }
   }
 }

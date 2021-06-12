@@ -17,19 +17,27 @@
 
 ### el-table-admin-page 参数
 
-| 参数       | 说明     | 类型  | 可选值 | 默认值 |
-| ---------- | -------- | ----- | ------ | ------ |
-| columns    | 表头     | Array | ——     | ——     |
-| table-data | 表格数据 | Array | ——     | ——     |
+| 参数        | 说明             | 类型    | 可选值     | 默认值 |
+| ----------- | ---------------- | ------- | ---------- | ------ |
+| columns     | 表头             | Array   | ——         | ——     |
+| table-data  | 表格数据         | Array   | ——         | ——     |
+| search-show | 控制搜索框的显示 | Boolean | true/false | true   |
 
 ### column 参数
 
-| 参数     | 说明                                            | 类型    | 可选值     | 默认值 |
-| -------- | ----------------------------------------------- | ------- | ---------- | ------ |
-| search   | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
-| children | 二级表头,里面内容同 column                      | Array   | ——         | ——     |
-| form     | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
-| isnull   | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
+| 参数                | 说明                                            | 类型    | 可选值     | 默认值 |
+| ------------------- | ----------------------------------------------- | ------- | ---------- | ------ |
+| search              | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
+| children            | 二级表头,里面内容同 column                      | Array   | ——         | ——     |
+| showOverflowTooltip | 当内容过长被隐藏时显示 tooltip                  | Array   | true/false | true   |
+| form                | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
+| isnull              | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
+
+### el-table-admin-page 方法
+
+| 方法名     | 说明                  | 参数    |
+| ---------- | --------------------- | ------- |
+| searchList | 请求 tableData 的方法 | entitys |
 
 ## 开发
 
