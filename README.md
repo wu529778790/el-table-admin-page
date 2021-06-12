@@ -19,7 +19,7 @@
 
 ## example
 
-在线demo：<http://blog.shenzjd.com/el-table-admin-page/>
+在线 demo：<https://blog.shenzjd.com/el-table-admin-page/>
 
 ```js
 npm install el-table-admin-page
@@ -315,4 +315,12 @@ if (typeof value === "number") {
 } else {
   // el-table的 current-change
 }
+```
+
+## 二次开发
+
+```js
+npm install
+npm run serve
+git subtree push --prefix dist origin gh-pages
 ```
