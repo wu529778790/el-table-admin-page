@@ -134,9 +134,9 @@ export default {
         );
         this.pageList.total =
           this.pageList.pageSize + Math.floor(Math.random() * (50 - 1 + 1) + 1);
-      }, 1000);
+      }, 500);
     },
-    //pageSize 改变时会触发
+    // pageSize 改变时会触发
     sizeChange(value) {
       this.pageList.pageSize = value;
       this.getPage();
