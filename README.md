@@ -19,6 +19,8 @@
 
 ## example
 
+在线demo：<http://blog.shenzjd.com/el-table-admin-page/>
+
 ```js
 npm install el-table-admin-page
 
