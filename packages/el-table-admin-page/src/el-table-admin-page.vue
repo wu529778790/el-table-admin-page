@@ -30,7 +30,7 @@
                         v-for="item in entitysSelection"
                         :key="item.prop"
                         :label="item.label"
-                        :value="item"
+                        :value="item.prop"
                       />
                     </el-select>
                     <slot name="searchLeft" :entitys="entitys" :index="index" />
@@ -159,7 +159,7 @@ export default {
     return {
       entitys: [
         {
-          querySelect: {},
+          querySelect: "",
           queryValue: "",
           show: false,
         },
@@ -188,6 +188,15 @@ export default {
         )
       );
       return result;
+    },
+  },
+  watch: {
+    entitysSelection: {
+      handler(value) {
+        this.entitys[0].querySelect = value[0].prop;
+      },
+      deep: true,
+      immediate: true
     },
   },
   created() {
@@ -225,7 +234,7 @@ export default {
         this.entitys.length <=
         this.columns.filter((item) => item.search !== false).length - 1
       ) {
-        this.entitys.push({ querySelect: {}, queryValue: "", show: true });
+        this.entitys.push({ querySelect: "", queryValue: "", show: true });
         this.entitys.map((item) => {
           item.show = true;
         });
@@ -248,7 +257,7 @@ export default {
      */
     clearEntity() {
       this.entitys.map((item) => {
-        item.querySelect = {};
+        item.querySelect = "";
         item.queryValue = "";
       });
     },
