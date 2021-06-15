@@ -34,6 +34,10 @@
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:wu529778790/el-table-admin-page"
+  },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
