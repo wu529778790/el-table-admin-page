@@ -5,6 +5,7 @@
   "author": "wu529778790",
   "private": false,
   "main": "lib/elTableAdminPage.umd.min.js",
+  "homepage": "https://blog.shenzjd.com/el-table-admin-page/",
   "keywords": [
     "el-table",
     "el-table-admin-page"
