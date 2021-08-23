@@ -170,9 +170,13 @@ export default {
     },
     // currentPage 改变时会触发
     currentChange(value) {
-      if (typeof value === 'number') {
+      if (typeof value === "number") {
+        // el-pagination的currentPage事件
         this.pageParams.currentPage = value;
         this.getPage();
+      } else {
+        // el-table的currentPage事件
+        console.log(value);
       }
     },
   },

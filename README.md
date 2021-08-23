@@ -69,6 +69,7 @@ Vue.use(elTableAdminPage);
       @searchList="getPage"
       @size-change="sizeChange"
       @current-change="currentChange"
+      highlight-current-row
     >
       <template slot="searchLeft" slot-scope="{ entitys, index }">
         <el-input
@@ -90,15 +91,16 @@ Vue.use(elTableAdminPage);
 </template>
 
 <script>
-import elTableAdminPage from "../packages/el-table-admin-page/src/el-table-admin-page.vue";
 export default {
-  components: { elTableAdminPage },
   name: "App",
   data() {
     return {
       columns: [
         {
           type: "selection", // 多选框
+        },
+        {
+          type: "radio", // 单选框
         },
         {
           type: "index", // 序号列
@@ -230,8 +232,12 @@ export default {
     // currentPage 改变时会触发
     currentChange(value) {
       if (typeof value === "number") {
+        // el-pagination的currentPage事件
         this.pageParams.currentPage = value;
         this.getPage();
+      } else {
+        // el-table的currentPage事件
+        console.log(value);
       }
     },
   },
