@@ -328,6 +328,14 @@ npm run serve
 git subtree push --prefix dist origin gh-pages
 ```
 
+发布 github packeages 的时候 package.json 的 name 需要加@wu529778790/el-table-admin-page
+
+.npmrc
+
+```js
+registry=https://npm.pkg.github.com/wu529778790
+```
+
 ## 参考链接
 
 - <https://juejin.cn/post/6859004947837485070>

@@ -1,5 +1,5 @@
 {
-  "name": "@wu529778790/el-table-admin-page",
+  "name": "el-table-admin-page",
   "version": "0.2.5",
   "description": "基于elment ui的el-table的快速页面生成器",
   "author": "wu529778790",
@@ -40,7 +40,7 @@
     "type": "git",
     "url": "git@github.com:wu529778790/el-table-admin-page"
   },
-  "publishConfig": { 
+  "publishConfig": {
     "repository": "https://npm.pkg.github.com/wu529778790"
   },
   "gitHooks": {
