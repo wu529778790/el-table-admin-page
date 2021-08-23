@@ -21,6 +21,35 @@
 
 在线 demo：<https://blog.shenzjd.com/el-table-admin-page/>
 
+## 参数配置
+
+### el-table-admin-page 参数
+
+| 参数        | 说明             | 类型    | 可选值     | 默认值 |
+| ----------- | ---------------- | ------- | ---------- | ------ |
+| columns     | 表头             | Array   | ——         | ——     |
+| table-data  | 表格数据         | Array   | ——         | ——     |
+| search-show | 控制搜索框的显示 | Boolean | true/false | true   |
+
+### column 参数
+
+| 参数                | 说明                                                                                             | 类型    | 可选值      | 默认值 |
+| ------------------- | ------------------------------------------------------------------------------------------------ | ------- | ----------- | ------ |
+| type                | column 的 type 值，设置不同的值与不同的效果,selection 代表多选，radio 代表单选，index 代表索引值 | String  | 'selection' | -      |
+| search              | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中                                                  | Boolean | true/false  | true   |
+| children            | 二级表头,里面内容同 column                                                                       | Array   | ——          | ——     |
+| showOverflowTooltip | 当内容过长被隐藏时显示 tooltip                                                                   | Array   | true/false  | true   |
+| form                | 是否出现在新增弹窗中                                                                             | Boolean | true/false  | true   |
+| isnull              | 新增时是否非空                                                                                   | Boolean | true/false  | true   |
+
+### el-table-admin-page 方法
+
+| 方法名     | 说明                  | 参数    |
+| ---------- | --------------------- | ------- |
+| searchList | 请求 tableData 的方法 | entitys |
+
+### 完整例子
+
 ```js
 npm install el-table-admin-page
 
@@ -209,32 +238,6 @@ export default {
 };
 </script>
 ```
-
-## 参数配置
-
-### el-table-admin-page 参数
-
-| 参数        | 说明             | 类型    | 可选值     | 默认值 |
-| ----------- | ---------------- | ------- | ---------- | ------ |
-| columns     | 表头             | Array   | ——         | ——     |
-| table-data  | 表格数据         | Array   | ——         | ——     |
-| search-show | 控制搜索框的显示 | Boolean | true/false | true   |
-
-### column 参数
-
-| 参数                | 说明                                            | 类型    | 可选值     | 默认值 |
-| ------------------- | ----------------------------------------------- | ------- | ---------- | ------ |
-| search              | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
-| children            | 二级表头,里面内容同 column                      | Array   | ——         | ——     |
-| showOverflowTooltip | 当内容过长被隐藏时显示 tooltip                  | Array   | true/false | true   |
-| form                | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
-| isnull              | 下拉框搜索,不设置的话默认会出现在搜索的下拉框中 | Boolean | true/false | true   |
-
-### el-table-admin-page 方法
-
-| 方法名     | 说明                  | 参数    |
-| ---------- | --------------------- | ------- |
-| searchList | 请求 tableData 的方法 | entitys |
 
 ### 以后要实现的功能
 

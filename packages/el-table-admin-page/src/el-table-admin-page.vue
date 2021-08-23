@@ -68,6 +68,7 @@
       v-bind="$attrs"
       :data="tableData"
       header-align="right"
+      @row-click="rowClick"
     >
       <template v-for="column in columns">
         <el-table-column
@@ -78,6 +79,18 @@
           :width="column.width || 50"
         />
         <el-table-column
+          v-if="['radio'].includes(column.type)"
+          v-bind="column"
+          :label="column.label || '单选'"
+          :key="column.prop"
+          :align="column.align || 'center'"
+          :width="column.width || 50"
+        >
+          <template slot-scope="{ row }">
+            <el-radio v-model="radioRow" :label="row">{{ "" }}</el-radio>
+          </template>
+        </el-table-column>
+        <el-table-column
           v-if="['index'].includes(column.type)"
           v-bind="column"
           :key="column.prop"
@@ -87,7 +100,7 @@
           :index="(index) => index + (currentPage - 1) * pageSize + 1"
         />
         <el-table-column
-          v-if="!['selection', 'index'].includes(column.type)"
+          v-if="!['selection', 'radio', 'index'].includes(column.type)"
           v-bind="column"
           :key="column.prop"
           :header-align="column.headerAlign || 'center'"
@@ -134,6 +147,7 @@ import {
   Option,
   Message,
   Input,
+  Radio,
 } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import CollapseTransition from "element-ui/lib/transitions/collapse-transition";
@@ -144,6 +158,7 @@ Vue.use(Pagination);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Input);
+Vue.use(Radio);
 Vue.component(CollapseTransition.name, CollapseTransition);
 Vue.prototype.$message = Message;
 
@@ -153,13 +168,13 @@ export default {
   props: {
     columns: {
       type: Array,
-      default: function () {
+      default: function() {
         return [];
       },
     },
     tableData: {
       type: Array,
-      default: function () {
+      default: function() {
         return [];
       },
     },
@@ -189,6 +204,7 @@ export default {
       ],
       // 加这个show是为了解决手动修改当前页码，数据改变，dom不生效的问题(也可以加key重新渲染)
       paginationShow: true,
+      radioRow: "",
     };
   },
   computed: {
@@ -332,6 +348,10 @@ export default {
           item.show = !item.show;
         }
       });
+    },
+    // 行的点击
+    rowClick(row) {
+      this.radioRow = row;
     },
   },
 };

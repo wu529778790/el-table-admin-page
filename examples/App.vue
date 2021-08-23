@@ -8,6 +8,7 @@
       @searchList="getPage"
       @size-change="sizeChange"
       @current-change="currentChange"
+      highlight-current-row
     >
       <template slot="searchLeft" slot-scope="{ entitys, index }">
         <el-input
@@ -36,6 +37,9 @@ export default {
       columns: [
         {
           type: "selection", // 多选框
+        },
+        {
+          type: "radio", // 单选框
         },
         {
           type: "index", // 序号列
