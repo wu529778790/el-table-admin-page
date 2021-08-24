@@ -25,11 +25,12 @@
 
 ### el-table-admin-page 参数
 
-| 参数        | 说明             | 类型    | 可选值     | 默认值 |
-| ----------- | ---------------- | ------- | ---------- | ------ |
-| columns     | 表头             | Array   | ——         | ——     |
-| table-data  | 表格数据         | Array   | ——         | ——     |
-| search-show | 控制搜索框的显示 | Boolean | true/false | true   |
+| 参数            | 说明             | 类型    | 可选值     | 默认值 |
+| --------------- | ---------------- | ------- | ---------- | ------ |
+| columns         | 表头             | Array   | ——         | ——     |
+| table-data      | 表格数据         | Array   | ——         | ——     |
+| search-show     | 控制搜索框的显示 | Boolean | true/false | true   |
+| pagination-show | 分页的显示       | Boolean | true/false | true   |
 
 ### column 参数
 

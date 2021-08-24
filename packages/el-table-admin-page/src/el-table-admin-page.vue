@@ -184,6 +184,11 @@ export default {
       default: true,
     },
     // 下面是pagination
+    paginationShow: {
+      // 加这个show是为了解决手动修改当前页码，数据改变，dom不生效的问题(也可以加key重新渲染)
+      type: Boolean,
+      default: true,
+    },
     currentPage: {
       type: Number,
       default: 1,
@@ -202,8 +207,6 @@ export default {
           show: false,
         },
       ],
-      // 加这个show是为了解决手动修改当前页码，数据改变，dom不生效的问题(也可以加key重新渲染)
-      paginationShow: true,
       radioRow: "",
     };
   },
@@ -332,9 +335,9 @@ export default {
         item.show = false;
       });
       // 加这个show是为了解决手动修改当前页码，数据改变，dom不生效的问题
-      this.paginationShow = false;
+      this.$emit("update:paginationShow", false);
       this.$nextTick(() => {
-        this.paginationShow = true;
+        this.$emit("update:paginationShow", true);
         reSetFirstPage && this.$emit("update:currentPage", 1);
       });
       this.$emit("searchList", this.entitys);
