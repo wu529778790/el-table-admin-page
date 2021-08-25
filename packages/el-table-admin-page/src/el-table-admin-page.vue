@@ -226,7 +226,7 @@ export default {
         this.columns.filter(
           (item) =>
             item.search !== false &&
-            !["selection", "index", "expand"].includes(item.type)
+            !["selection", "radio", "index", "expand"].includes(item.type)
         )
       );
       return result;

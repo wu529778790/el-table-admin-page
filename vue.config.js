@@ -2,6 +2,7 @@ const path = require('path')
 
 module.exports = {
     publicPath: './',
+    assetsDir: './',
     pages: {
         index: {
             entry: 'examples/main.js',
@@ -9,7 +10,7 @@ module.exports = {
             filename: 'index.html',
         }
     },
-    css: { extract: false },
+    css: { extract: true },
     chainWebpack: config => {
         config.module
             .rule('js')
