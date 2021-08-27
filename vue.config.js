@@ -2,7 +2,6 @@ const path = require('path')
 
 module.exports = {
     publicPath: './',
-    assetsDir: './',
     pages: {
         index: {
             entry: 'examples/main.js',
@@ -10,7 +9,7 @@ module.exports = {
             filename: 'index.html',
         }
     },
-    css: { extract: true },
+    css: { extract: false },
     chainWebpack: config => {
         config.module
             .rule('js')
@@ -20,6 +19,7 @@ module.exports = {
             .use('babel')
             .loader('babel-loader')
             .tap(options => {
+                console.log(options)
                 return options
             })
     }
